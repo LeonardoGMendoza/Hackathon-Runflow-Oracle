@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runflow - Workflow Builder Funcional</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo"><div class="logo-icon"></div></div>
+            <div class="menu-items">
+                <div class="menu-item active"><div class="icon-nodes"></div><span>Nodes</span></div>
+            </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-area">
+            <header class="top-nav">
+                <div class="nav-tabs">
+                    <span class="tab active">Workflow Builder</span>
+                    <input type="password" id="api-key-input" placeholder="Cole sua GROQ API KEY aqui..." class="header-input">
+                </div>
+                <div class="actions">
+                    <button class="btn-play" id="btn-run">▶ RUN WORKFLOW</button>
+                </div>
+            </header>
+            
+            <div class="canvas" id="canvas">
+                <div class="connection-line line-1"></div>
+                <div class="connection-line line-2"></div>
+                
+                <div class="node node-trigger" id="node-trigger" style="left: 10%; top: 45%;">
+                    <div class="node-icon">⚡</div>
+                    <span>TRIGGER: Novo Lead</span>
+                </div>
+                
+                <div class="node node-filter" style="left: 28%; top: 45%;">
+                    <div class="node-icon">Y</div>
+                    <span>PRÉ-FILTRO</span>
+                </div>
+
+                <div class="node node-llm" id="main-llm-node" style="left: 48%; top: 43%;">
+                    <div class="node-badge">LLM</div>
+                    <div class="node-icon purple-icon">🧠</div>
+                    <span>AGENTE SDR VENDAS</span>
+                </div>
+                
+                <div class="node node-action" id="node-action" style="left: 70%; top: 35%;">
+                    <div class="node-icon">🗄️</div>
+                    <span>ATUALIZAR CRM</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel Lateral: LLM -->
+        <div class="properties-panel" id="panel-llm">
+            <div class="panel-header">
+                <h3>Agente SDR (Configuração)</h3>
+                <button class="close-btn" onclick="closePanels()">×</button>
+            </div>
+            
+            <div class="property-group">
+                <label>SYSTEM PROMPT</label>
+                <textarea id="llm-system-prompt" class="code-area prompt-area">
+Você é um Especialista Sênior em Qualificação de Vendas (SDR) e Analista de Dados B2B. Sua missão é analisar transcrições de conversas e classificá-las.
+DIRETRIZES: 1. NÃO ALUCINE; 2. CITAÇÕES EXATAS; 3. CONSERVADORISMO.</textarea>
+            </div>
+
+            <div class="property-group">
+                <label>STRUCTURED OUTPUT (JSON Schema)</label>
+                <textarea id="llm-json-schema" class="code-area schema-area">
+{
+  "type": "object",
+  "properties": {
+    "temperatura": {
+      "type": "string",
+      "enum": ["quente", "morno", "frio"]
+    },
+    "sinais_criticos_detectados": {
+      "type": "array",
+      "items": { "type": "object", "properties": { "sinal": {"type": "string"}, "evidencia_exata": {"type": "string"} } }
+    },
+    "tratamento_dados_faltantes": { "type": "string" }
+  }
+}</textarea>
+            </div>
+        </div>
+
+        <!-- Painel Lateral: Gatilho (Lead Input) -->
+        <div class="properties-panel" id="panel-trigger">
+            <div class="panel-header">
+                <h3>Entrada de Dados (Trigger)</h3>
+                <button class="close-btn" onclick="closePanels()">×</button>
+            </div>
+            
+            <div class="property-group">
+                <label>TEXTO DO LEAD (Test Case)</label>
+                <textarea id="trigger-lead-text" class="code-area prompt-area">Bom dia, falo em nome da TechSolutions. Nosso contrato com o fornecedor atual encerra em 30 dias e estamos buscando uma alternativa urgente para nossa equipe de 50 vendedores. Já reservei um budget de R$ 10k/mês para essa migração. Conseguimos marcar um papo rápido amanhã com o nosso diretor de TI para ele dar o aval técnico?</textarea>
+            </div>
+        </div>
+
+        <!-- Modal de Resultado (Action Node) -->
+        <div class="modal" id="result-modal">
+            <div class="modal-content">
+                <div class="panel-header">
+                    <h3>✅ Resultado JSON Recebido (CRM Atualizado)</h3>
+                    <button class="close-btn" onclick="document.getElementById('result-modal').style.display='none'">×</button>
+                </div>
+                <pre id="result-output" class="code-area schema-area" style="height: 400px; overflow-y: auto;"></pre>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+            <p>Processando LLM via Groq...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
