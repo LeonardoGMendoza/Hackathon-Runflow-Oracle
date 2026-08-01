@@ -1,0 +1,8 @@
+Analise os seguintes dados do lead e gere a saída estruturada em JSON, respeitando as regras estritas de não alucinar evidências.
+
+DADOS DO LEAD:
+"""
+{{DADOS_DO_LEAD}}
+"""
+
+Lembre-se: Use CITAÇÕES EXATAS e seja explícito sobre dados contraditórios ou ausentes no campo 'tratamento_dados_faltantes'.

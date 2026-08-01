@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "properties": {
+    "temperatura": {
+      "type": "string",
+      "enum": ["quente", "morno", "frio"],
+      "description": "A classificação final do lead."
+    },
+    "sinais_criticos_detectados": {
+      "type": "array",
+      "description": "Lista de sinais positivos encontrados na conversa.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sinal": { "type": "string", "description": "Breve descrição do sinal." },
+          "evidencia_exata": { "type": "string", "description": "TRECHO EXATO copiado do texto." },
+          "origem_id": { "type": "string", "description": "O ID da mensagem de onde o trecho foi tirado (se aplicável)." }
+        },
+        "required": ["sinal", "evidencia_exata"]
+      }
+    },
+    "armadilhas_detectadas": {
+      "type": "array",
+      "description": "Lista de falsos positivos ou problemas graves (falta de budget, não é decisor).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tipo": { "type": "string" },
+          "evidencia_exata": { "type": "string" }
+        },
+        "required": ["tipo", "evidencia_exata"]
+      }
+    },
+    "justificativa_temperatura": {
+      "type": "string",
+      "description": "Explicação lógica de como os sinais e armadilhas levaram à temperatura escolhida."
+    },
+    "tratamento_dados_faltantes": {
+      "type": "string",
+      "description": "Explique o que o agente fez caso faltasse algum dado (ex: 'Não identifiquei budget, portanto fui conservador na nota'). Isso garante a pontuação de 'Caixa de Vidro'."
+    }
+  },
+  "required": ["temperatura", "sinais_criticos_detectados", "armadilhas_detectadas", "justificativa_temperatura", "tratamento_dados_faltantes"]
+}
