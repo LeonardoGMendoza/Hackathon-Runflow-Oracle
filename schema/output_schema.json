@@ -3,42 +3,44 @@
   "properties": {
     "temperatura": {
       "type": "string",
-      "enum": ["quente", "morno", "frio"],
-      "description": "A classificação final do lead."
+      "enum": ["hot", "warm", "cold"],
+      "description": "A classificação térmica da oportunidade (em inglês)."
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Pontuação de 0 a 100 indicando a propensão de fechamento."
+    },
+    "summary": {
+      "type": "string",
+      "description": "Dossiê completo da oportunidade, resumindo o histórico."
     },
     "sinais_criticos_detectados": {
       "type": "array",
-      "description": "Lista de sinais positivos encontrados na conversa.",
       "items": {
         "type": "object",
         "properties": {
-          "sinal": { "type": "string", "description": "Breve descrição do sinal." },
-          "evidencia_exata": { "type": "string", "description": "TRECHO EXATO copiado do texto." },
-          "origem_id": { "type": "string", "description": "O ID da mensagem de onde o trecho foi tirado (se aplicável)." }
+          "sinal": { "type": "string", "description": "Qual foi o alerta ou sinal detectado" },
+          "evidence": { "type": "string", "description": "CITAÇÃO EXATA: Trecho literal copiado da conversa." },
+          "evidence_source": { "type": "string", "enum": ["e-mail", "WhatsApp", "reunião"], "description": "A fonte exata de onde a evidência foi tirada." }
         },
-        "required": ["sinal", "evidencia_exata"]
+        "required": ["sinal", "evidence", "evidence_source"]
       }
     },
-    "armadilhas_detectadas": {
-      "type": "array",
-      "description": "Lista de falsos positivos ou problemas graves (falta de budget, não é decisor).",
-      "items": {
-        "type": "object",
-        "properties": {
-          "tipo": { "type": "string" },
-          "evidencia_exata": { "type": "string" }
-        },
-        "required": ["tipo", "evidencia_exata"]
-      }
-    },
-    "justificativa_temperatura": {
+    "next_action": {
       "type": "string",
-      "description": "Explicação lógica de como os sinais e armadilhas levaram à temperatura escolhida."
+      "description": "Ação recomendada específica e executável na segunda-feira de manhã pelo vendedor."
     },
-    "tratamento_dados_faltantes": {
+    "deal_value": {
+      "type": "number",
+      "description": "Valor financeiro (forecast) extraído das negociações. Deixe nulo se não houver citação."
+    },
+    "loss_reason": {
       "type": "string",
-      "description": "Explique o que o agente fez caso faltasse algum dado (ex: 'Não identifiquei budget, portanto fui conservador na nota'). Isso garante a pontuação de 'Caixa de Vidro'."
+      "enum": ["preço", "concorrente", "timing", "sumiço"],
+      "description": "Motivo da perda. APENAS preencher se a oportunidade estiver na etapa Perdido."
     }
   },
-  "required": ["temperatura", "sinais_criticos_detectados", "armadilhas_detectadas", "justificativa_temperatura", "tratamento_dados_faltantes"]
+  "required": ["temperatura", "score", "summary", "sinais_criticos_detectados", "next_action"]
 }
